@@ -185,8 +185,8 @@ end_testcode:                                                           \
 //-----------------------------------------------------------------------
 // Pass/Fail Macro
 //-----------------------------------------------------------------------
-#define RVTEST_SYNC fence
-//#define RVTEST_SYNC nop
+//#define RVTEST_SYNC fence
+#define RVTEST_SYNC nop
 
 #define RVTEST_PASS                                                     \
         RVTEST_SYNC;                                                    \

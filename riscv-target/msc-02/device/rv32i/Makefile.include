@@ -4,7 +4,7 @@ else
     ARCH := Linux64
 endif
 
-TARGET_SIM ?= $(ROOTDIR)/../tb_out/cpu_top_tb
+TARGET_SIM ?= $(ROOTDIR)/../tb_out/cpu_run
 ifeq ($(shell command -v $(TARGET_SIM) 2> /dev/null),)
     $(error Target simulator executable '$(TARGET_SIM)` not found)
 endif
