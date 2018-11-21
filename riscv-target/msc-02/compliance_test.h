@@ -14,6 +14,7 @@
 //-----------------------------------------------------------------------
 
 #define RV_COMPLIANCE_HALT                                                    \
+	li a0, 0xbaad900d						      \
         RVTEST_PASS                                                           \
 
 #define RV_COMPLIANCE_RV32M                                                   \
