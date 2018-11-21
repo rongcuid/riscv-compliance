@@ -13,23 +13,25 @@
 // RV Compliance Macros
 //-----------------------------------------------------------------------
 
-#define RV_COMPLIANCE_HALT                                                    \
-	li a0, 0xbaad900d						      \
-        RVTEST_PASS                                                           \
+#define RV_COMPLIANCE_HALT                  \
+	li a0, 0xbaad900d;		    \
+        RVTEST_PASS                         \
 
-#define RV_COMPLIANCE_RV32M                                                   \
-        RVTEST_RV32M                                                          \
+#define RV_COMPLIANCE_RV32M                 \
+        RVTEST_RV32M                        \
 
-#define RV_COMPLIANCE_CODE_BEGIN                                              \
-        RVTEST_CODE_BEGIN                                                     \
+#define RV_COMPLIANCE_CODE_BEGIN            \
+        RVTEST_CODE_BEGIN                   \
 
-#define RV_COMPLIANCE_CODE_END                                                \
-        RVTEST_CODE_END                                                       \
+#define RV_COMPLIANCE_CODE_END              \
+        RVTEST_CODE_END                     \
 
-#define RV_COMPLIANCE_DATA_BEGIN                                              \
-        RVTEST_DATA_BEGIN                                                     \
+#define RV_COMPLIANCE_DATA_BEGIN            \
+        .word 0xdeadc0de;                    \
+        RVTEST_DATA_BEGIN                   \
 
-#define RV_COMPLIANCE_DATA_END                                                \
-        RVTEST_DATA_END                                                       \
+#define RV_COMPLIANCE_DATA_END              \
+        .word 0xdeaddead;                    \
+        RVTEST_DATA_END                     \
 
 #endif

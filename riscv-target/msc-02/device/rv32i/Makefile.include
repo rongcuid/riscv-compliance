@@ -15,6 +15,7 @@ RUN_TARGET=\
 RISCV_PREFIX   ?= riscv32-unknown-elf-
 RISCV_GCC      ?= $(RISCV_PREFIX)gcc
 RISCV_OBJDUMP  ?= $(RISCV_PREFIX)objdump
+RISCV_OBJCOPY  ?= $(RISCV_PREFIX)objcopy
 RISCV_GCC_OPTS ?= -static -mcmodel=medany -fvisibility=hidden -nostdlib -nostartfiles
 
 COMPILE_TARGET=\
@@ -22,6 +23,7 @@ COMPILE_TARGET=\
 		-I$(ROOTDIR)/riscv-test-env/ \
 		-I$(ROOTDIR)/riscv-test-env/p/ \
 		-I$(ROOTDIR)/riscv-target/$(RISCV_TARGET)/ \
-		-T$(ROOTDIR)/riscv-test-env/p/link.ld $$< \
+		-T$(ROOTDIR)/riscv-test-env/msc/link.ld $$< \
 		-o $(work_dir_isa)/$$@; \
-	$$(RISCV_OBJDUMP) -D $(work_dir_isa)/$$@ > $(work_dir_isa)/$$@.objdump
+	$$(RISCV_OBJDUMP) -D $(work_dir_isa)/$$@ > $(work_dir_isa)/$$@.objdump; \
+	$$(RISCV_OBJCOPY) -O binary $(work_dir_isa)/$$@ $(work_dir_isa)/$$@.bin
