@@ -11,7 +11,7 @@ pipe:= |
 empty:=
 space:= $(empty) $(empty)
 
-export RISCV_TARGET ?= riscvOVPsim
+export RISCV_TARGET ?= msc-02
 export RISCV_DEVICE ?= rv32i
 export RISCV_PREFIX ?= riscv64-unknown-elf-
 
