@@ -118,13 +118,13 @@
         sw t3, 0(t2); \
         addi t1, t1, 4; \
         addi t2, t2, 4; \
-        bne t1, t2, 1; \
+        bne t1, t2, 1b; \
         la t2, _bstart; \
         la t1, _bend; \
         2: \
         sw zero, 0(t2); \
         addi t2, t2, 4; \
-        bne t2, t1, 2; \
+        bne t2, t1, 2b; \
 
 #define EXTRA_INIT_TIMER
 
@@ -213,10 +213,19 @@ end_testcode:                                                           \
 //#define RVTEST_SYNC fence
 #define RVTEST_SYNC nop
 
+// Register a1: Command
+// IO Port 0x80000000: Handshake on writing 1
+// Commands:
+// 1 - test_pass
+// 2 - test_fail
+// 3 - test_halt
 #define RVTEST_PASS                                                     \
         RVTEST_SYNC;                                                    \
         li TESTNUM, 1;                                                  \
         SWSIG (0, TESTNUM);                                                   \
+        li t0, 0x80000000; \
+        li t1, 1; \
+        sw t1, 0(t0); \
         ecall
 
 #define TESTNUM gp
@@ -226,6 +235,9 @@ end_testcode:                                                           \
         sll TESTNUM, TESTNUM, 1;                                        \
         or TESTNUM, TESTNUM, 1;                                         \
         SWSIG (0, TESTNUM);                                                   \
+        li t0, 0x80000000; \
+        li t1, 2; \
+        sw t1, 0(t0); \
         ecall
 
 //-----------------------------------------------------------------------
@@ -233,7 +245,9 @@ end_testcode:                                                           \
 //-----------------------------------------------------------------------
 
 #define EXTRA_DATA
+#define RVTEST_DATA_BEGIN
 
+#if 0
 #define RVTEST_DATA_BEGIN                                               \
         EXTRA_DATA                                                      \
         .pushsection .tohost,"aw",@progbits;                            \
@@ -241,6 +255,8 @@ end_testcode:                                                           \
         .align 8; .global fromhost; fromhost: .dword 0;                 \
         .popsection;                                                    \
         .align 4; .global begin_signature; begin_signature:
+
+#endif
 
 #define RVTEST_DATA_END .align 4; .global end_signature; end_signature:
 

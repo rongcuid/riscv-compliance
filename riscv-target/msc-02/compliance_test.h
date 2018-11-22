@@ -13,9 +13,17 @@
 // RV Compliance Macros
 //-----------------------------------------------------------------------
 
+// IO Port 0x80000000: Command on writing non-zero
+// Commands:
+// 1 - test_pass
+// 2 - test_fail
+// 3 - test_halt
+// On halt, send 
 #define RV_COMPLIANCE_HALT                  \
-	li a0, 0xbaad900d;		    \
-        RVTEST_PASS                         \
+        li t0, 0x80000000; \
+        li t1, 3; \
+        sw t1, 0(t0); \
+        ecall \
 
 #define RV_COMPLIANCE_RV32M                 \
         RVTEST_RV32M                        \
