@@ -144,11 +144,11 @@ trap_vector:                                                            \
         /* test whether the test came from pass/fail */                 \
         csrr t5, mcause;                                                \
         li t6, CAUSE_USER_ECALL;                                        \
-        beq t5, t6, write_tohost;                                       \
+        beq t5, t6, unhandled_exception;                                       \
         li t6, CAUSE_SUPERVISOR_ECALL;                                  \
-        beq t5, t6, write_tohost;                                       \
+        beq t5, t6, unhandled_exception;                                       \
         li t6, CAUSE_MACHINE_ECALL;                                     \
-        beq t5, t6, write_tohost;                                       \
+        beq t5, t6, unhandled_exception;                                       \
         /* if an mtvec_handler is defined, jump to it */                \
         la t5, mtvec_handler;                                           \
         beqz t5, 1f;                                                    \
@@ -162,9 +162,8 @@ handle_exception:                                                       \
   other_exception:                                                      \
         /* some unhandlable exception occurred */                       \
   1:    ori TESTNUM, TESTNUM, 1337;                                     \
-  write_tohost:                                                         \
-        sw TESTNUM, tohost, t5;                                         \
-        j write_tohost;                                                 \
+  unhandled_exception:                                                         \
+        j unhandled_exception;                                                 \
 reset_vector:                                                           \
         RISCV_MULTICORE_DISABLE;                                        \
         INIT_SPTBR;                                                     \
