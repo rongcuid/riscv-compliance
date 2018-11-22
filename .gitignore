@@ -6,3 +6,5 @@
 /work/
 /setup.env
 *.swp
+*.log
+*.out
