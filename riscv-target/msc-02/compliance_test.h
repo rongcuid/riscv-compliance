@@ -35,8 +35,8 @@
         RVTEST_CODE_END                     \
 
 #define RV_COMPLIANCE_DATA_BEGIN            \
-        .word 0xdeadc0de;                    \
         RVTEST_DATA_BEGIN                   \
+        .word 0xdeadc0de;                    \
 
 #define RV_COMPLIANCE_DATA_END              \
         .word 0xdeaddead;                    \

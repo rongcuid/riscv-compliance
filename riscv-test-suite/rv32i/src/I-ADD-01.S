@@ -409,6 +409,7 @@ test_E_data:
 # Output data section.
 RV_COMPLIANCE_DATA_BEGIN
 
+.align 4
 test_A1_res:
     .fill 6, 4, -1
 test_A2_res:
