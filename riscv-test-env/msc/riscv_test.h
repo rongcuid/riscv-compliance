@@ -127,6 +127,9 @@
         sw zero, 0(t2); \
         addi t2, t2, 4; \
         blt t2, t1, 2b; \
+        li t0, 0x80000000; \
+        li t1, 0; \
+        sw t1, 0(t0); \
 
 #define EXTRA_INIT_TIMER
 
@@ -214,9 +217,9 @@ end_testcode:                                                           \
 //#define RVTEST_SYNC fence
 #define RVTEST_SYNC nop
 
-// Register a1: Command
-// IO Port 0x80000000: Handshake on writing 1
+// IO Port 0x80000000: Command to testbench
 // Commands:
+// 0 - scan for result base address
 // 1 - test_pass
 // 2 - test_fail
 // 3 - test_halt
