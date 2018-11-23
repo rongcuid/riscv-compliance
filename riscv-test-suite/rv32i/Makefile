@@ -43,8 +43,8 @@ tests += $$($(1)_tests)
 
 endef
 
-$(eval $(call compile_template,rv32i,-march=rv32i -mabi=ilp32))
-#$(eval $(call compile_template,rv32i,-march=RV32I))
+#$(eval $(call compile_template,rv32i,-march=rv32i -mabi=ilp32))
+$(eval $(call compile_template,rv32i,-march=RV32I))
 
 tests32_out = $(patsubst %.elf,%.out32,$(target32_tests))
 

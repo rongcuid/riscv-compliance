@@ -57,6 +57,7 @@
 # define CHECK_XLEN li a0, 1; slli a0, a0, 31; bltz a0, 1f; RVTEST_PASS; 1:
 #endif
 
+#if 0
 #define INIT_PMP                                                        \
   la t0, 1f;                                                            \
   csrw mtvec, t0;                                                       \
@@ -74,6 +75,7 @@
   .align 2;                                                             \
 1:
 
+#
 #define DELEGATE_NO_TRAPS                                               \
   la t0, 1f;                                                            \
   csrw mtvec, t0;                                                       \
@@ -83,7 +85,6 @@
   .align 2;                                                             \
 1:
 
-#if 0
 #define RVTEST_ENABLE_SUPERVISOR                                        \
   li a0, MSTATUS_MPP & (MSTATUS_MPP >> 1);                              \
   csrs mstatus, a0;                                                     \
@@ -171,26 +172,10 @@ handle_exception:                                                       \
         j unhandled_exception;                                                 \
 reset_vector:                                                           \
         RISCV_MULTICORE_DISABLE;                                        \
-        INIT_SPTBR;                                                     \
-        INIT_PMP;                                                       \
-        DELEGATE_NO_TRAPS;                                              \
         li TESTNUM, 0;                                                  \
         la t0, trap_vector;                                             \
         csrw mtvec, t0;                                                 \
         CHECK_XLEN;                                                     \
-        /* if an stvec_handler is defined, delegate exceptions to it */ \
-        la t0, stvec_handler;                                           \
-        beqz t0, 1f;                                                    \
-        csrw stvec, t0;                                                 \
-        li t0, (1 << CAUSE_LOAD_PAGE_FAULT) |                           \
-               (1 << CAUSE_STORE_PAGE_FAULT) |                          \
-               (1 << CAUSE_FETCH_PAGE_FAULT) |                          \
-               (1 << CAUSE_MISALIGNED_FETCH) |                          \
-               (1 << CAUSE_USER_ECALL) |                                \
-               (1 << CAUSE_BREAKPOINT);                                 \
-        csrw medeleg, t0;                                               \
-        csrr t1, medeleg;                                               \
-        bne t0, t1, other_exception;                                    \
 1:      csrwi mstatus, 0;                                               \
         init;                                                           \
         EXTRA_INIT;                                                     \
