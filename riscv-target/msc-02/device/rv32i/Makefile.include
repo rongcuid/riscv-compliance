@@ -10,7 +10,7 @@ ifeq ($(shell command -v $(TARGET_SIM) 2> /dev/null),)
 endif
 
 RUN_TARGET=\
-    $(TARGET_SIM) $(work_dir_isa)/$< | tee $(work_dir_isa)/$(*).output | cut -d' ' -f2 | tee $(work_dir_isa)/$@
+    $(TARGET_SIM) $(work_dir_isa)/$< | tee $(work_dir_isa)/$@ | grep '(DD)' | cut -d' ' -f2 > $(work_dir_isa)/$(*).signature.output
 
 RISCV_PREFIX   ?= riscv32-unknown-elf-
 RISCV_GCC      ?= $(RISCV_PREFIX)gcc
