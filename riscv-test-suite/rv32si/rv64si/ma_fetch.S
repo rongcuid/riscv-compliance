@@ -13,7 +13,7 @@
 #include "aw_test_macros.h"
 
 RVTEST_RV64S
-RVTEST_CODE_BEGIN
+RV_COMPLIANCE_CODE_BEGIN
 
 #ifdef __MACHINE_MODE
   #define sscratch mscratch
@@ -199,11 +199,11 @@ stvec_handler:
   bne a0, t0, fail
 1:
 
-  addi a1, a1, 12
+  addi a1, a1, 8
   csrw sepc, a1
   sret
 
-RVTEST_CODE_END
+RV_COMPLIANCE_CODE_END
 
   .data
 RV_COMPLIANCE_DATA_BEGIN

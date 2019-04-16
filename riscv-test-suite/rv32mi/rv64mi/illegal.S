@@ -15,7 +15,7 @@
 #RVTEST_RV64S
 RVTEST_RV64M
 
-RVTEST_CODE_BEGIN
+RV_COMPLIANCE_CODE_BEGIN
 
   .align 2
   .option norvc
@@ -135,7 +135,7 @@ synchronous_exception:
   bne t0, t1, fail
   csrr t0, mepc
 
-  # Make sure mtval contains either 0 or the instruction word.
+  # Make sure mbadaddr contains either 0 or the instruction word.
   csrr t2, mbadaddr
   beqz t2, 1f
   lhu t3, 0(t0)
@@ -188,7 +188,7 @@ synchronous_exception:
 9:
   j 2b
 
-RVTEST_CODE_END
+RV_COMPLIANCE_CODE_END
 
   .data
 RV_COMPLIANCE_DATA_BEGIN

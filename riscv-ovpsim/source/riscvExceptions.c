@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2005-2018 Imperas Software Ltd., www.imperas.com
+ * Copyright (c) 2005-2019 Imperas Software Ltd., www.imperas.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -651,26 +651,6 @@ VMI_FETCH_SNAP_FN(riscvFetchSnap) {
 }
 
 //
-// Validate alignment of instruction fetch from the passed address
-//
-static Bool validateFetchAddressAlign(
-    riscvP riscv,
-    Uns64  thisPC,
-    Bool   complete
-) {
-    // bit 1 must be zero if compressed instructions are not implemented (bit 0
-    // can have any value, because it is always ignored)
-    Bool ok = (riscv->configInfo.arch&ISA_C) || !(thisPC&2);
-
-    // exception if alignment is bad
-    if(!ok && complete) {
-        riscvTakeException(riscv, riscv_E_InstructionAddressMisaligned, thisPC);
-    }
-
-    return ok;
-}
-
-//
 // Validate instruction fetch from the passed address
 //
 static Bool validateFetchAddressInt(
@@ -710,7 +690,8 @@ static Bool validateFetchAddressInt(
 }
 
 //
-// Validate that the passed address is a mapped fetch address
+// Validate that the passed address is a mapped fetch address (NOTE: address
+// alignment is not validated here but by the preceding branch instruction)
 //
 static Bool validateFetchAddress(
     riscvP     riscv,
@@ -718,20 +699,10 @@ static Bool validateFetchAddress(
     Uns64      thisPC,
     Bool       complete
 ) {
-    if(!validateFetchAddressAlign(riscv, thisPC, complete)) {
-
-        // fetch alignment exception (handled in validateFetchAddressAlign)
-        return False;
-
-    } else if(!validateFetchAddressInt(riscv, domain, thisPC, complete)) {
+    if(!validateFetchAddressInt(riscv, domain, thisPC, complete)) {
 
         // fetch exception (handled in validateFetchAddressInt)
         return False;
-
-    } else if((thisPC+2) & (RISCV_PAGE_SIZE-1)) {
-
-        // simPC isn't two bytes before page end - success
-        return True;
 
     } else if(riscvGetInstructionSize(riscv, thisPC) <= 2) {
 
@@ -1061,15 +1032,12 @@ static void haltProcessor(riscvP riscv, riscvDisableReason reason) {
 //
 static void restartProcessor(riscvP riscv, riscvDisableReason reason) {
 
-    reason &= riscv->disable;
+    riscv->disable &= ~reason;
 
-    if(reason) {
-
-        riscv->disable &= ~reason;
-
-        if(!riscv->disable) {
-            vmirtRestartNext((vmiProcessorP)riscv);
-        }
+    // restart if no longer disabled (maybe from blocked state not visible in
+    // disable code)
+    if(!riscv->disable) {
+        vmirtRestartNext((vmiProcessorP)riscv);
     }
 }
 
@@ -1200,14 +1168,6 @@ static void doNMI(riscvP riscv) {
 ////////////////////////////////////////////////////////////////////////////////
 
 //
-// This holds processor and vector information for an interrupt
-//
-typedef struct riscvInterruptInfoS {
-    riscvP hart;
-    Uns32  userData;
-} riscvInterruptInfo, *riscvInterruptInfoP;
-
-//
 // Update interrupt state because of some pending state change (either from
 // external interrupt source or software pending register)
 //
@@ -1297,15 +1257,6 @@ static VMI_NET_CHANGE_FN(interruptPortCB) {
 ////////////////////////////////////////////////////////////////////////////////
 // NET PORT CREATION
 ////////////////////////////////////////////////////////////////////////////////
-
-//
-// Structure describing a port
-//
-typedef struct riscvNetPortS {
-    vmiNetPort         desc;
-    riscvInterruptInfo ii;
-    riscvNetPortP      next;
-} riscvNetPort;
 
 //
 // Allocate a new port and append to the tail of the list
@@ -1413,5 +1364,45 @@ VMI_NET_PORT_SPECS_FN(riscvNetPortSpecs) {
     }
 
     return this ? &this->desc : 0;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// SAVE/RESTORE SUPPORT
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Save net state not covered by register read/write API
+//
+void riscvNetSave(
+    riscvP              riscv,
+    vmiSaveContextP     cxt,
+    vmiSaveRestorePhase phase
+) {
+    if(phase==SRT_END_CORE) {
+
+        // save latched control input state
+        VMIRT_SAVE_FIELD(cxt, riscv, netValue);
+        VMIRT_SAVE_FIELD(cxt, riscv, intState);
+    }
+}
+
+//
+// Restore net state not covered by register read/write API
+//
+void riscvNetRestore(
+    riscvP              riscv,
+    vmiRestoreContextP  cxt,
+    vmiSaveRestorePhase phase
+) {
+    if(phase==SRT_END_CORE) {
+
+        // restore latched control input state
+        VMIRT_RESTORE_FIELD(cxt, riscv, netValue);
+        VMIRT_RESTORE_FIELD(cxt, riscv, intState);
+
+        // refresh core state
+        riscvTestInterrupt(riscv);
+    }
 }
 

@@ -1,3 +1,48 @@
+2019-02-21 Lee Moore <moore@imperas.com>
+    * Fixed     bug in RVTEST_IO_ASSERT_GPR_EQ which was not preserving register t0
+    * Corrected commit I-LUI-01.S, register target changed but missed assertion
+
+2019-02-21 Deborah Soung <debs@sifive.com>
+    * added RiscvFormalSpec as a target with its own unique environment
+
+2019-02-15 Radek Hajek <radek.hajek@codasip.com>
+    * updated rv32i tests to support all registers (x31) with assertions
+    * updated spec/TestFormatSpec.adoc example ISA test with new assertions
+
+2019-02-05 Deborah Soung <debs@sifive.com>
+    * [Issue #33] fixing rv32si/ma_fetch.S test
+    * [Issue #32] fixing breakpoint test
+
+2019-02-01 Lee Moore <moore@imperas.com>
+    * updated Infrastructure macros to support non-volatile registers
+    * updated riscvOVPsim
+
+2019-01-29 Deborah Soung <debs@sifive.com>
+    * Added Rocket Chip generated cores as a target
+        * riscv-target/rocket/compliance_io.h created
+	* riscv-target/rocket/compliance_test.h created
+	* riscv-target/rocket/*/Makefile.include created for existing test suites
+	* README.adoc updated with instructions for using Rocket cores as targets
+	
+2019-01-22 Premysl Vaclavik  <pvaclavik@codasip.com>
+    * feature: initial version of Compliance Test Format Specification
+        * This new document outlines how we should like the compliance
+          system to work going forward. By contrast the doc/README.adoc file
+          describes the current system as it is.
+        * Approved at Compliance TG meeting of 9 Jan 2019.
+
+2019-01-02 Radek Hajek <radek.hajek@codasip.com>
+    * unified macros in all compliance tests
+
+2018-12-20 Lee Moore <moore@imperas.com>
+    * fixed riscvOVPsim 
+
+2018-11-22 Simon Davidmann <simond@imperas.com>
+    * added information on test suite status
+    
+2018-11-21 Olof Kindgren <olof.kindgren@gmail.com>
+    * Added support for using external target directories with $TARGETDIR
+
 2018-11-21 Neel Gala <neelgala@incoresemi.com>
    	* riscv-test-suite/rv_/references/_.reference_output: changed signature 
 	  format for all tests to include only 4-bytes per line starting with the
