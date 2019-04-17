@@ -122,29 +122,6 @@
         li t0, 0x80000000; \
         sw zero, 0(t0); /* Trigger memory scanning */\
 
-#if 0
-  extra_init: \
-        la t1, _etext;                      \
-        la t2, _data; \
-        la t3, _edata; \
-        1: \
-        lw t4, 0(t1); \
-        sw t4, 0(t2); \
-        addi t1, t1, 4; \
-        addi t2, t2, 4; \
-        blt t2, t3, 1b; \
-        la t2, _bstart; \
-        la t1, _bend; \
-        2: \
-        sw zero, 0(t2); \
-        addi t2, t2, 4; \
-        blt t2, t1, 2b; \
-        li t0, 0x80000000; \
-        li t1, 0; \
-        sw t1, 0(t0); \
-
-#endif
-
 #define EXTRA_INIT_TIMER
 
 #define INTERRUPT_HANDLER j other_exception /* No interrupts should occur */
