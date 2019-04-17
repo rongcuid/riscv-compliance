@@ -113,6 +113,12 @@
 #define EXTRA_TVEC_MACHINE
 #define EXTRA_INIT \
   extra_init: \
+        la t2, _bstart; \
+        la t1, _bend; \
+        2: \
+        sw zero, 0(t2); \
+        addi t2, t2, 4; \
+        blt t2, t1, 2b; \
         li t0, 0x80000000; \
         sw zero, 0(t0); /* Trigger memory scanning */\
 
