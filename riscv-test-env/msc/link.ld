@@ -16,7 +16,9 @@ SECTIONS
     *(.text);
     _etext = .;
    }
-  .data 0x10000000 : AT (ADDR(.text) + SIZEOF(.text)) { 
+  /* .data : AT (ADDR(.text) + SIZEOF(.text)) { */
+   . = ALIGN(4);
+   .data : {
     _data = .;
     *(.data);
   }

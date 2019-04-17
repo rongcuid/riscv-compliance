@@ -113,6 +113,11 @@
 #define EXTRA_TVEC_MACHINE
 #define EXTRA_INIT \
   extra_init: \
+        li t0, 0x80000000; \
+        sw zero, 0(t0); /* Trigger memory scanning */\
+
+#if 0
+  extra_init: \
         la t1, _etext;                      \
         la t2, _data; \
         la t3, _edata; \
@@ -131,6 +136,8 @@
         li t0, 0x80000000; \
         li t1, 0; \
         sw t1, 0(t0); \
+
+#endif
 
 #define EXTRA_INIT_TIMER
 
